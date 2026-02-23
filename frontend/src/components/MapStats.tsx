@@ -15,9 +15,11 @@ export function MapStatsComponent({ maps }: MapStatsProps) {
     );
   }
 
+  const sortedMaps = [...maps].sort((a, b) => parseInt(b.matches) - parseInt(a.matches));
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {maps.map((map) => {
+      {sortedMaps.map((map) => {
         const winRate = parseFloat(map.win_rate) || 0;
         
         return (

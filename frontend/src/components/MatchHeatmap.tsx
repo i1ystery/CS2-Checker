@@ -160,13 +160,13 @@ export function MatchHeatmap({ matchId, mapName, players = [], defaultPlayerId }
   const hasDemoData = Array.isArray(allPlayersData) && allPlayersData.length > 0;
 
   return (
-    <div className="bg-gray-800/40 rounded-xl border border-gray-700/30 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">Mapová analýza hráčů</h3>
+    <div className="bg-gray-800/40 rounded-xl border border-gray-700/30 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <h3 className="text-base sm:text-lg font-semibold text-white">Mapová analýza hráčů</h3>
         {hasDemoData && (
           <button
             onClick={() => setShowReupload(!showReupload)}
-            className="text-sm text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-1"
+            className="self-start sm:self-auto text-xs sm:text-sm text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-1"
           >
             {showReupload ? 'Skrýt' : 'Znovu nahrát demo'}
             <svg 
@@ -210,7 +210,7 @@ export function MatchHeatmap({ matchId, mapName, players = [], defaultPlayerId }
                 <nav className="flex w-full">
                   <button
                     onClick={() => setVisualizationMode('dots')}
-                    className={`flex-1 px-4 py-2 text-sm font-medium transition-colors border-b-2 text-center ${
+                    className={`flex-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors border-b-2 text-center ${
                       visualizationMode === 'dots'
                         ? 'border-orange-500 text-orange-500'
                         : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
@@ -220,7 +220,7 @@ export function MatchHeatmap({ matchId, mapName, players = [], defaultPlayerId }
                   </button>
                   <button
                     onClick={() => setVisualizationMode('heatmap')}
-                    className={`flex-1 px-4 py-2 text-sm font-medium transition-colors border-b-2 text-center ${
+                    className={`flex-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors border-b-2 text-center ${
                       visualizationMode === 'heatmap'
                         ? 'border-orange-500 text-orange-500'
                         : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
@@ -240,7 +240,7 @@ export function MatchHeatmap({ matchId, mapName, players = [], defaultPlayerId }
                   <select
                     value={selectedPlayerId}
                     onChange={(e) => setSelectedPlayerId(e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 sm:px-4 py-2 text-sm bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
                     {availablePlayers.map(player => (
                       <option key={player.player_id} value={player.player_id}>

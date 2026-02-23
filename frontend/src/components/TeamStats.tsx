@@ -41,13 +41,13 @@ export function TeamStats({ teamName, players, isWin }: TeamStatsProps) {
   return (
     <div className="bg-gray-800/40 rounded-xl border border-gray-700/30 overflow-hidden">
       <div className={`px-4 py-3 border-b border-gray-700/30 ${isWin ? 'bg-green-900/20' : 'bg-gray-800/20'}`}>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h2 className="font-semibold text-lg">
             {teamName}
             {isWin && <span className="ml-2 text-green-400 text-sm">(Výhra)</span>}
           </h2>
           {avgElo !== null && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-sm">
               <span className="text-xs text-gray-400">Průměrné ELO:</span>
               <span className={`font-semibold ${getEloColor(avgElo)}`}>
                 {avgElo}
@@ -56,8 +56,78 @@ export function TeamStats({ teamName, players, isWin }: TeamStatsProps) {
           )}
         </div>
       </div>
-      <div className="overflow-x-auto -mx-4 sm:mx-0">
-        <table className="w-full min-w-[800px]">
+
+      {/* Mobile cards */}
+      <div className="md:hidden p-3 space-y-2">
+        {players.map((player) => {
+          const kd = parseFloat(player.stats.kd);
+          return (
+            <div key={player.player_id} className="bg-gray-900/50 border border-gray-700/40 rounded-lg p-3">
+              <Link
+                href={`/player/${player.player_id}`}
+                className="flex items-center justify-between gap-2 text-white hover:text-blue-400 transition-colors"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <img
+                    src={getAvatarUrl(player.avatar || '')}
+                    alt={player.nickname}
+                    className="w-7 h-7 rounded-full flex-shrink-0"
+                  />
+                  <span className="font-medium truncate">{player.nickname}</span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {player.level !== null && (
+                    <Image
+                      src={getLevelIcon(player.level)}
+                      alt={`Úroveň ${player.level}`}
+                      width={20}
+                      height={20}
+                    />
+                  )}
+                  {player.elo !== null && (
+                    <span className={`font-semibold text-sm ${getEloColor(player.elo)}`}>
+                      {player.elo}
+                    </span>
+                  )}
+                </div>
+              </Link>
+
+              <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+                <div className="bg-gray-800/60 rounded p-2 text-center">
+                  <p className="text-gray-400">K / D / A</p>
+                  <p className="text-white font-semibold">
+                    {player.stats.kills}/{player.stats.deaths}/{player.stats.assists}
+                  </p>
+                </div>
+                <div className="bg-gray-800/60 rounded p-2 text-center">
+                  <p className="text-gray-400">K/D</p>
+                  <p className={`font-semibold ${kd >= 1 ? 'text-green-400' : 'text-red-400'}`}>{player.stats.kd}</p>
+                </div>
+                <div className="bg-gray-800/60 rounded p-2 text-center">
+                  <p className="text-gray-400">ADR</p>
+                  <p className="text-white font-semibold">{player.stats.adr}</p>
+                </div>
+                <div className="bg-gray-800/60 rounded p-2 text-center">
+                  <p className="text-gray-400">HS%</p>
+                  <p className="text-white font-semibold">{player.stats.hs_percent}%</p>
+                </div>
+                <div className="bg-gray-800/60 rounded p-2 text-center">
+                  <p className="text-gray-400">MVP</p>
+                  <p className="text-yellow-400 font-semibold">{player.stats.mvps || '—'}</p>
+                </div>
+                <div className="bg-gray-800/60 rounded p-2 text-center">
+                  <p className="text-gray-400">KR</p>
+                  <p className="text-white font-semibold">{player.stats.kr}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full min-w-[900px]">
           <thead className="bg-gray-800/50">
             <tr className="text-xs text-gray-400 uppercase tracking-wider">
               <th className="px-2 sm:px-4 py-3 text-left sticky left-0 bg-gray-800/50 z-10">Hráč</th>

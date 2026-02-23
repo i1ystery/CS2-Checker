@@ -546,13 +546,12 @@ export function Heatmap({
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative w-full aspect-square">
         <canvas
           ref={canvasRef}
           width={width}
           height={height}
-          className="w-full h-auto rounded-lg border border-gray-700"
-          style={{ maxWidth: '100%', height: 'auto' }}
+          className="absolute inset-0 w-full h-full rounded-lg border border-gray-700"
         />
       </div>
       

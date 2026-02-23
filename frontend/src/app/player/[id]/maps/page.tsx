@@ -33,9 +33,9 @@ export default function MapsPage() {
         const data: PlayerDetail = await response.json();
         setPlayer(data);
         
-        // Vybrat první mapu jako výchozí
         if (data.maps && data.maps.length > 0) {
-          setSelectedMap(data.maps[0]);
+          const sorted = [...data.maps].sort((a, b) => parseInt(b.matches) - parseInt(a.matches));
+          setSelectedMap(sorted[0]);
         }
       } catch (err) {
         console.error('Error:', err);
@@ -79,7 +79,7 @@ export default function MapsPage() {
     <main className="min-h-screen bg-gray-900 text-white flex flex-col">
       {/* Navigace */}
       <div className="bg-gray-800/50 border-b border-gray-700/50">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="w-full max-w-[1000px] mx-auto px-4 xl:px-8 py-3 flex items-center justify-between">
           <Link 
             href={`/player/${playerId}`}
             className="text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-2 text-sm"
@@ -106,14 +106,14 @@ export default function MapsPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 flex-1">
+      <div className="w-full max-w-[1000px] mx-auto px-4 xl:px-8 py-8 flex-1">
         <h1 className="text-2xl font-bold text-white mb-6">Statistiky podle map</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col lg:flex-row gap-6 xl:gap-8">
           {/* Seznam map */}
-          <div className="space-y-2">
+          <div className="w-full lg:w-72 lg:flex-shrink-0 space-y-2">
             <h2 className="text-sm font-medium text-gray-400 mb-3">Vyberte mapu</h2>
-            {player.maps?.map((map) => {
+            {[...(player.maps || [])].sort((a, b) => parseInt(b.matches) - parseInt(a.matches)).map((map) => {
               const winRate = parseFloat(map.win_rate) || 0;
               const isSelected = selectedMap?.name === map.name;
               
@@ -145,7 +145,7 @@ export default function MapsPage() {
           </div>
 
           {/* Detail mapy */}
-          <div className="lg:col-span-2">
+          <div className="flex-1 min-w-0 overflow-hidden">
             {selectedMap ? (
               <div className="space-y-6">
                 {/* Header mapy */}
@@ -198,7 +198,8 @@ export default function MapsPage() {
                 </div>
 
                 {/* Heatmapa */}
-                <MapHeatmap 
+                <MapHeatmap
+                  key={selectedMap.name}
                   playerId={playerId} 
                   mapName={selectedMap.name}
                   steamId={player?.steam_id_64}
