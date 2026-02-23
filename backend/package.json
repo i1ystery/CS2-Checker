@@ -1,0 +1,40 @@
+{
+  "name": "cs2-checker-backend",
+  "version": "1.0.0",
+  "description": "Backend server pro CS2 Checker - aplikace pro sledování statistik hráčů Counter Strike 2",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cs2",
+    "counter-strike",
+    "statistics",
+    "api"
+  ],
+  "author": "Maksym Kuzma",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@laihoe/demoparser2": "^0.40.3",
+    "@types/multer": "^2.0.0",
+    "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.5",
+    "demofile": "^2.10.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.3",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
