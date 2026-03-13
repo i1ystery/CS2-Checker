@@ -4,6 +4,9 @@ import { getAvatarUrl } from '@/utils/avatar';
 import { MatchInfo, TeamStats, Footer } from '@/components';
 import { MatchHeatmap } from '@/components/MatchHeatmap';
 
+// Pouze server-side (SSR): Next.js volá backend přímo. URL nikdy neposíláme do prohlížeče.
+const API_URL = process.env.API_URL || process.env.BACKEND_URL || 'http://localhost:4000';
+
 interface MatchDetail {
   match_id: string;
   game: string;
@@ -70,7 +73,7 @@ interface MatchDetail {
 async function getMatchDetail(matchId: string): Promise<MatchDetail | null> {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/matches/${matchId}`,
+      `${API_URL}/api/matches/${matchId}`,
       { cache: 'no-store' }
     );
     
@@ -88,7 +91,7 @@ async function getMatchDetail(matchId: string): Promise<MatchDetail | null> {
 async function getPlayerAvatar(playerId: string): Promise<string> {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/players/${playerId}`,
+      `${API_URL}/api/players/${playerId}`,
       { cache: 'no-store' }
     );
     

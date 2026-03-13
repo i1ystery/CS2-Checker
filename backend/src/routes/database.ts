@@ -24,7 +24,7 @@ router.get('/match/:matchId', async (req, res) => {
     
     res.json(demoData);
   } catch (error) {
-    console.error('Chyba při získávání demo dat:', error);
+    console.error('Error fetching demo data:', error);
     res.status(500).json({ error: 'Chyba při získávání demo dat' });
   }
 });
@@ -40,7 +40,7 @@ router.get('/player/:playerId/map/:mapName', async (req, res) => {
     
     res.json(matches);
   } catch (error) {
-    console.error('Chyba při získávání zápasů:', error);
+    console.error('Error fetching matches:', error);
     res.status(500).json({ error: 'Chyba při získávání zápasů' });
   }
 });
@@ -56,7 +56,7 @@ router.get('/player/:playerId', async (req, res) => {
     
     res.json(matches);
   } catch (error) {
-    console.error('Chyba při získávání zápasů:', error);
+    console.error('Error fetching matches:', error);
     res.status(500).json({ error: 'Chyba při získávání zápasů' });
   }
 });
@@ -72,7 +72,7 @@ router.get('/map/:mapName', async (req, res) => {
     
     res.json(matches);
   } catch (error) {
-    console.error('Chyba při získávání zápasů:', error);
+    console.error('Error fetching matches:', error);
     res.status(500).json({ error: 'Chyba při získávání zápasů' });
   }
 });
@@ -92,7 +92,7 @@ router.delete('/match/:matchId', async (req, res) => {
     
     res.json({ message: 'Demo data byla úspěšně smazána' });
   } catch (error) {
-    console.error('Chyba při mazání demo dat:', error);
+    console.error('Error deleting demo data:', error);
     res.status(500).json({ error: 'Chyba při mazání demo dat' });
   }
 });

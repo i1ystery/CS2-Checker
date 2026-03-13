@@ -6,7 +6,9 @@ node_modules/
 .env.local
 .env.*.local
 
-# SQLite database
+# SQLite database & data folder
+data/
+**/data/
 *.db
 *.db-journal
 *.db-wal

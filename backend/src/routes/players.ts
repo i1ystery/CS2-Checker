@@ -30,7 +30,7 @@ router.get('/search', async (req, res) => {
   }
 
   const parsed = parseSearchQuery(query);
-  console.log(`Vyhledávání: typ=${parsed.type}, hodnota=${parsed.value}`);
+  console.log(`Search: type=${parsed.type}, value=${parsed.value}`);
 
   try {
     let results: PlayerResult[] = [];
@@ -55,12 +55,6 @@ router.get('/search', async (req, res) => {
       } else {
         return res.json({ items: [], message: 'Hráč s tímto Steam ID nemá propojený Faceit účet' });
       }
-    } else if (parsed.type === 'steam_url') {
-      // Steam vanity URL - nepodporováno bez Steam API
-      return res.status(400).json({ 
-        error: 'Steam custom URL není podporováno. Použijte Steam64 ID (17 číslic) nebo Faceit přezdívku.',
-        hint: 'Steam64 ID najdete na steamid.io'
-      });
     } else {
       // Standardní vyhledávání podle nicku
       const searchData = await searchPlayers(parsed.value, 10);
@@ -69,7 +63,7 @@ router.get('/search', async (req, res) => {
 
     res.json({ items: results });
   } catch (error) {
-    console.error('Chyba při vyhledávání:', error);
+    console.error('Error searching for player:', error);
     res.status(500).json({ error: 'Chyba při komunikaci s Faceit API' });
   }
 });
@@ -146,7 +140,7 @@ router.get('/:playerId', async (req, res) => {
       })) || []
     });
   } catch (error) {
-    console.error('Chyba při získávání hráče:', error);
+    console.error('Error fetching player:', error);
     res.status(500).json({ error: 'Chyba při komunikaci s Faceit API' });
   }
 });
@@ -163,7 +157,7 @@ router.get('/:playerId/matches', async (req, res) => {
     const matches = await getMatchHistory(playerId, limit);
     res.json({ items: matches });
   } catch (error) {
-    console.error('Chyba při získávání zápasů:', error);
+    console.error('Error fetching matches:', error);
     res.status(500).json({ error: 'Chyba při komunikaci s Faceit API' });
   }
 });

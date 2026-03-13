@@ -67,7 +67,6 @@ export async function getMatchHistory(playerId: string, limit: number = 20): Pro
       `/players/${playerId}/history?game=cs2&offset=0&limit=${limit}`
     );
     
-    // Získat ELO změny z interního API (stejný endpoint jako používá faceittracker.net)
     let eloChangesMap: Map<string, number> = new Map();
     try {
       const eloResponse = await fetch(
@@ -86,11 +85,9 @@ export async function getMatchHistory(playerId: string, limit: number = 20): Pro
       // Pokračujeme bez ELO změn
     }
     
-    // Fetch stats for all matches in parallel
     const matchStatsPromises = history.items.map(match => getMatchStats(match.match_id));
     const allMatchStats = await Promise.all(matchStatsPromises);
     
-    // Zkontrolovat, zda máme demo data pro všechny zápasy paralelně
     const demoCheckPromises = history.items.map(match => getDemoDataByMatchId(match.match_id));
     const demoDataResults = await Promise.all(demoCheckPromises);
     
@@ -167,7 +164,7 @@ export async function getMatchHistory(playerId: string, limit: number = 20): Pro
   }
 }
 
-// Interface pro interní Faceit API response
+// Interface pro Faceit API response pro ELO historii (internal stats API – vrací 403)
 interface FaceitInternalStats {
   matchId: string;
   date: number;
@@ -178,43 +175,61 @@ interface FaceitInternalStats {
 }
 
 /**
- * Získání ELO historie ze skutečných dat z interního Faceit API
- * POZNÁMKA: Tento endpoint není oficiálně dokumentovaný, ale používá se i jinými trackery
- * (např. faceittracker.net). Vrací přesné ELO změny pro každý zápas.
+ * Získání ELO odhadované historie pro graf.
  */
 export async function getEloHistory(playerId: string, currentElo: number, limit: number = 20): Promise<EloPoint[]> {
   try {
-    // Použijeme interní Faceit API pro přesné ELO hodnoty
-    // Tento endpoint používají i jiné trackery (faceittracker.net)
-    const response = await fetch(
-      `https://api.faceit.com/stats/v1/stats/time/users/${playerId}/games/cs2?page=0&size=${limit}`
+    const history = await faceitFetch<FaceitMatchHistory>(
+      `/players/${playerId}/history?game=cs2&offset=0&limit=${limit}`
     );
-    
-    if (!response.ok) {
-      console.error(`Faceit internal API error: ${response.status}`);
-      return [];
+
+    if (!history?.items?.length) return [];
+
+    const points: EloPoint[] = [];
+    const hasApiElo = history.items.some(m => typeof (m as { elo?: number }).elo === 'number');
+
+    if (hasApiElo) {
+      // Use ELO from API when present (history items ordered newest first; we want oldest first for chart)
+      const items = [...history.items].reverse();
+      for (let i = 0; i < items.length; i++) {
+        const match = items[i];
+        if (!match) continue;
+        const apiElo = (match as { elo?: number }).elo;
+        if (typeof apiElo !== 'number' || Number.isNaN(apiElo)) continue;
+        const prevElo = i > 0 ? (items[i - 1] as { elo?: number }).elo : undefined;
+        const change = typeof prevElo === 'number' && !Number.isNaN(prevElo) ? apiElo - prevElo : 0;
+        points.push({ date: match.finished_at, elo: apiElo, change });
+      }
+      return points;
     }
-    
-    const data = await response.json() as FaceitInternalStats[];
-    
-    if (!data || data.length === 0) {
-      return [];
+
+    let elo = currentElo;
+    for (let i = 0; i < history.items.length; i++) {
+      const match = history.items[i];
+      if (!match) continue;
+
+      const isInFaction1 = match.teams.faction1.players.some((p: { player_id: string }) => p.player_id === playerId);
+      const playerFaction = isInFaction1 ? 'faction1' : 'faction2';
+      const isWin = match.results.winner === playerFaction;
+
+      let eloDelta = isWin ? 25 : -25;
+      const score = match.results.score;
+      if (score) {
+        const diff = Math.abs(score.faction1 - score.faction2);
+        if (isWin) {
+          eloDelta = diff <= 3 ? 25 : diff <= 6 ? 22 : 18;
+        } else {
+          eloDelta = diff <= 3 ? -25 : diff <= 6 ? -22 : -18;
+        }
+      }
+
+      points.push({ date: match.finished_at, elo, change: eloDelta });
+      elo -= eloDelta;
     }
-    
-    // Data jsou seřazena od nejnovějšího po nejstarší
-    // Převrátíme na chronologické pořadí pro graf
-    const points: EloPoint[] = data
-      .filter(match => match.elo !== undefined && match.elo !== null)
-      .map(match => ({
-        date: Math.floor(match.date / 1000), // Převod na sekundy
-        elo: typeof match.elo === 'string' ? parseInt(match.elo) : match.elo,
-        change: typeof match.elo_delta === 'string' ? parseInt(match.elo_delta) : (match.elo_delta || 0)
-      }))
-      .reverse(); // Od nejstaršího po nejnovější pro graf
-    
+    points.reverse();
     return points;
   } catch (error) {
-    console.error('Error getting ELO history from internal API:', error);
+    console.error('Error getting ELO history:', error);
     return [];
   }
 }

@@ -39,7 +39,7 @@ export function MatchHeatmap({ matchId, mapName, players = [], defaultPlayerId }
       if (!matchId) return;
       
       try {
-        const response = await fetch(`http://localhost:4000/api/database/match/${matchId}`);
+        const response = await fetch(`/api/database/match/${matchId}`);
         if (response.ok) {
           const data = await response.json();
           if (data && data.players_data && Array.isArray(data.players_data) && data.players_data.length > 0) {

@@ -18,7 +18,7 @@ if (!fs.existsSync(uploadsDir)) {
 const upload = multer({
   dest: uploadsDir,
   limits: {
-    fileSize: 1000 * 1024 * 1024 // 500MB limit (demo soubory mohou být velké)
+    fileSize: 1000 * 1024 * 1024 // 1GB limit
   },
   fileFilter: (_req, file, cb) => {
     if (file.originalname.endsWith('.dem')) {
@@ -31,7 +31,7 @@ const upload = multer({
 
 /**
  * POST /api/demos/parse
- * Upload a parse demo soubor pro konkrétního hráče
+ * Upload a parse demo souboru konkrétního hráče
  */
 router.post('/parse', (req, res, next) => {
   upload.single('demo')(req, res, (err) => {
@@ -54,7 +54,7 @@ router.post('/parse', (req, res, next) => {
     }
 
     const { mapName, matchId } = req.body;
-
+    
     if (!mapName) {
       // Smazat nahraný soubor
       fs.unlinkSync(req.file.path);
@@ -114,13 +114,13 @@ router.post('/parse', (req, res, next) => {
             })
             .filter(Boolean);
         } catch (error) {
-          console.warn('Nepodařilo se získat Steam IDs hráčů, použijeme Faceit IDs:', error);
+          console.warn('Failed to get Steam IDs for players, using Faceit IDs:', error);
           // Fallback na Faceit player IDs
           expectedPlayerIds = faceitPlayerIds;
         }
       }
     } catch (error) {
-      console.warn('Nepodařilo se získat informace o zápase pro validaci:', error);
+      console.warn('Failed to get match info for validation:', error);
       // Pokračovat i bez validace, pokud se nepodařilo získat informace o zápase
     }
 
@@ -151,17 +151,17 @@ router.post('/parse', (req, res, next) => {
         });
       }
 
-      // Pokud validace prošla, použít mapu z dema (je přesnější)
+      // Pokud validace prošla, použít map name z dema
       if (validation.mapName) {
         expectedMapName = validation.mapName;
-        console.log(`Používá se název mapy z dema: ${validation.mapName}`);
+        console.log(`Using map name from demo: ${validation.mapName}`);
       }
     } else {
       // Pokud nemáme informace o zápase, zkusit získat mapu z dema
       const demoMapName = getMapNameFromDemo(demoPath);
       if (demoMapName) {
         expectedMapName = demoMapName;
-        console.log(`Používá se název mapy z dema: ${demoMapName}`);
+        console.log(`Using map name from demo: ${demoMapName}`);
       }
     }
 
@@ -169,7 +169,7 @@ router.post('/parse', (req, res, next) => {
     // Backend vrací data rozdělená podle hráčů s transformovanými souřadnicemi
     const playersData = await parseDemoForAllPlayers(demoPath, expectedMapName);
 
-    console.log('Parsování dokončeno:', {
+    console.log('Parsing complete:', {
       playersCount: playersData.length,
       totalDeaths: playersData.reduce((sum, p) => sum + p.deaths.length, 0),
       totalKills: playersData.reduce((sum, p) => sum + p.kills.length, 0)
@@ -178,9 +178,9 @@ router.post('/parse', (req, res, next) => {
     // Uložit data do databáze
     try {
       await saveDemoData(matchId, expectedMapName, playersData);
-      console.log(`Demo data uložena do databáze pro zápas ${matchId}`);
+      console.log(`Demo data saved to database for match ${matchId}`);
     } catch (dbError) {
-      console.error('Chyba při ukládání do databáze:', dbError);
+      console.error('Error saving to database:', dbError);
       // Pokračovat i když se nepodařilo uložit do databáze
     }
 
@@ -193,7 +193,7 @@ router.post('/parse', (req, res, next) => {
       matchId: matchId
     });
   } catch (error) {
-    console.error('Chyba při parsování demo:', error);
+    console.error('Error parsing demo:', error);
     
     // Smazat soubor v případě chyby
     if (req.file) {

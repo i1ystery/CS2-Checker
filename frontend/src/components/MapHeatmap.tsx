@@ -24,7 +24,6 @@ interface DemoDataFromDB {
   updated_at: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export function MapHeatmap({ playerId, mapName, steamId }: MapHeatmapProps) {
   const [allDeaths, setAllDeaths] = useState<Array<{ x: number; y: number; team_num?: number; layer?: 'upper' | 'lower' }>>([]);
@@ -54,7 +53,7 @@ export function MapHeatmap({ playerId, mapName, steamId }: MapHeatmapProps) {
       
       if (!steamIdToUse && playerId) {
         try {
-          const playerResponse = await fetch(`${API_URL}/api/players/${playerId}`);
+          const playerResponse = await fetch(`/api/players/${playerId}`);
           if (playerResponse.ok) {
             const playerData = await playerResponse.json();
             steamIdToUse = playerData.steam_id_64;
@@ -75,7 +74,7 @@ export function MapHeatmap({ playerId, mapName, steamId }: MapHeatmapProps) {
 
       try {
         const response = await fetch(
-          `${API_URL}/api/database/player/${steamIdToUse}/map/${normalizedMapName}`
+          `/api/database/player/${steamIdToUse}/map/${normalizedMapName}`
         );
 
         if (!response.ok) {
@@ -180,7 +179,7 @@ export function MapHeatmap({ playerId, mapName, steamId }: MapHeatmapProps) {
                 <div className="bg-gray-800/60 rounded-lg p-3 text-left text-sm space-y-2">
                   <p className="text-orange-400 font-medium">Jak na to:</p>
                   <ol className="text-gray-400 space-y-1 list-decimal list-inside">
-                    <li>Otevřete detail zápasu ze seznamu</li>
+                    <li>Na profilu hráče otevřete detail zápasu na této mapě</li>
                     <li>Nahrajte .dem soubor na stránce zápasu</li>
                     <li>Data se automaticky uloží a zobrazí zde</li>
                   </ol>

@@ -2,6 +2,8 @@
 
 A web application for tracking Counter-Strike 2 player statistics with heatmap visualizations. Search any player by their Faceit nickname or profile link, view detailed stats, match history, and generate heatmaps from demo files.
 
+This project uses the [demoparser](https://github.com/LaihoE/demoparser) library by **LaihoE** for parsing CS2 demo files.
+
 ## Prerequisites
 
 - **Node.js** 18 or newer — [download here](https://nodejs.org/)
@@ -29,7 +31,7 @@ cd CS2-Checker
 
 ```bash
 cd backend
-cp .env.example .env
+xcopy .env.example .env
 npm install
 ```
 
@@ -39,7 +41,7 @@ Open `backend/.env` and replace `your_faceit_api_key_here` with your actual Face
 
 ```bash
 cd frontend
-cp .env.example .env.local
+xcopy .env.example .env.local
 npm install
 ```
 
@@ -71,21 +73,3 @@ The app will be available at **http://localhost:3000**.
 2. View their overall statistics (ELO, K/D, HS%, Win Rate) and recent match history.
 3. Open a match detail and upload a `.dem` demo file to generate kill/death heatmaps.
 4. Parsed demo data is stored locally in SQLite so it loads instantly on subsequent visits.
-
-## Project Structure
-
-```
-CS2-Checker/
-├── backend/          Node.js + Express API server
-│   ├── src/
-│   │   ├── database/ SQLite connection, models, services
-│   │   ├── routes/   API endpoints
-│   │   ├── services/ Faceit API integration, demo parser
-│   │   └── types/    TypeScript type definitions
-│   └── data/         SQLite database file (auto-created)
-│
-└── frontend/         Next.js + React UI
-    └── src/
-        ├── app/      Pages (home, player profile, match detail)
-        └── components/
-```

@@ -23,7 +23,7 @@ export default function Home() {
     setSearched(true);
 
     try {
-      const response = await fetch(`http://localhost:4000/api/players/search?query=${encodeURIComponent(query.trim())}`);
+      const response = await fetch(`/api/players/search?query=${encodeURIComponent(query.trim())}`);
       
       if (!response.ok) {
         throw new Error('Chyba při vyhledávání');

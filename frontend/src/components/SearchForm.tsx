@@ -16,7 +16,7 @@ export function SearchForm({ query, setQuery, onSubmit, loading }: SearchFormPro
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Přezdívka, Faceit URL nebo Steam URL..."
+        placeholder="Přezdívka, Faceit URL nebo SteamID64..."
         className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-orange-500 focus:outline-none text-white placeholder-gray-500"
       />
       <button

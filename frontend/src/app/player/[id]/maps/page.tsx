@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+
 import { PlayerDetail, MapStats } from '@/types';
 import { getAvatarUrl } from '@/utils/avatar';
 import { MapHeatmap, Footer } from '@/components';
@@ -24,7 +25,7 @@ export default function MapsPage() {
       setError(null);
 
       try {
-        const response = await fetch(`http://localhost:4000/api/players/${playerId}`);
+        const response = await fetch(`/api/players/${playerId}`);
         
         if (!response.ok) {
           throw new Error('Hráč nenalezen');

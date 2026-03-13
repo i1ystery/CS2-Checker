@@ -1,6 +1,5 @@
 /**
  * Transformační parametry pro CS2 mapy
- * Založeno na HLTV overview description files
  */
 export interface MapConfig {
   pos_x: number;

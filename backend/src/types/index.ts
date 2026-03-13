@@ -15,7 +15,7 @@ export interface FaceitPlayerDetails {
   nickname: string;
   avatar: string;
   country: string;
-  steam_id_64?: string; // Steam ID hráče
+  steam_id_64?: string;
   games?: {
     cs2?: {
       faceit_elo: number;
@@ -29,9 +29,9 @@ export interface FaceitMatchHistory {
     match_id: string;
     competition_name?: string;
     finished_at: number;
-    i1?: string; // Map name
-    i18?: string; // Map image
-    elo?: number; // Player's ELO after this match
+    i1?: string; // Název mapy
+    i18?: string; // Obrázek mapy
+    elo?: number; // ELO hráče po tomto zápase
     results: {
       winner: string;
       score?: {
@@ -181,7 +181,7 @@ export interface MatchResult {
   result: 'win' | 'loss';
   date: number;
   elo_change: number | null;
-  has_demo?: boolean; // Zda máme demo data pro tento zápas
+  has_demo?: boolean;
   player_stats?: {
     kills: number;
     deaths: number;

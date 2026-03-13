@@ -40,7 +40,7 @@ export function DemoUpload({ mapName, matchId, onDataLoaded }: DemoUploadProps) 
         formData.append('matchId', matchId);
       }
 
-      const response = await fetch('http://localhost:4000/api/demos/parse', {
+      const response = await fetch('/api/demos/parse', {
         method: 'POST',
         body: formData
       });

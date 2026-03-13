@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+
 import { PlayerDetail, Match, MatchesResult } from '@/types';
 import { 
   PlayerHeader, 
@@ -31,8 +32,8 @@ export default function PlayerPage() {
 
       try {
         const [playerRes, matchesRes] = await Promise.all([
-          fetch(`http://localhost:4000/api/players/${playerId}`),
-          fetch(`http://localhost:4000/api/players/${playerId}/matches?limit=20`)
+          fetch(`/api/players/${playerId}`),
+          fetch(`/api/players/${playerId}/matches?limit=20`)
         ]);
 
         if (!playerRes.ok) {

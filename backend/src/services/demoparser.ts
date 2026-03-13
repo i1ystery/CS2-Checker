@@ -59,7 +59,7 @@ export function getMapNameFromDemo(demoPath: string): string | null {
     
     return null;
   } catch (error) {
-    console.error('Chyba při získávání názvu mapy z dema:', error);
+    console.error('Error getting map name from demo:', error);
     return null;
   }
 }
@@ -101,7 +101,7 @@ export function getPlayersFromDemo(demoPath: string): Array<{ steamId: string; n
 
     return players;
   } catch (error) {
-    console.error('Chyba při získávání hráčů z dema:', error);
+    console.error('Error getting players from demo:', error);
     return [];
   }
 }
@@ -168,7 +168,7 @@ export function validateDemoAgainstMatch(
       const nameMatchCount = Array.from(demoNames).filter(name => expectedNames.has(name)).length;
       if (nameMatchCount > matchCount) {
         matchCount = nameMatchCount;
-        console.log('Používá se porovnání podle nicknames místo Steam IDs');
+        console.log('Using nickname comparison instead of Steam IDs');
       }
     }
     
@@ -239,13 +239,7 @@ export async function parseDemoForAllPlayers(
       ['X', 'Y', 'Z', 'name', 'team_num', 'attacker_steamid', 'round', 'tick']  // other fields - vrací attacker_X, attacker_Y, attacker_Z, attacker_name, attacker_team_num, attacker_steamid, round, tick
     );
 
-    console.log(`Nalezeno ${deathEvents.length} death eventů`);
-
-    // Debug: zkontrolovat strukturu prvních death eventů
-    if (deathEvents.length > 0) {
-      console.log('První death event (ukázka):', JSON.stringify(deathEvents[0], null, 2));
-      console.log('Klíče prvního death eventu:', Object.keys(deathEvents[0]));
-    }
+    console.log(`Found ${deathEvents.length} death events`);
 
     // Mapa pro ukládání dat podle hráčů
     // Klíč je nickname (nebo Steam ID jako fallback)
@@ -257,7 +251,6 @@ export async function parseDemoForAllPlayers(
     }>();
 
     // Procházení death eventů a seskupení podle hráčů
-    // Používáme user_name a attacker_name pro identifikaci hráčů (místo Steam ID)
     for (const event of deathEvents) {
       // Player fields - oběť (victim)
       const victimName = (event as any).user_name;
@@ -273,14 +266,12 @@ export async function parseDemoForAllPlayers(
       const attackerName = (event as any).attacker_name;
       const attackerSteamId = (event as any).attacker_steamid; // Použijeme jako fallback
       const attackerTeamNum = (event as any).attacker_team_num; // 2 = T, 3 = CT
-      // Pozice útočníka - použijeme attacker_X, attacker_Y, attacker_Z z other fields
       const attackerX = (event as any).attacker_X;
       const attackerY = (event as any).attacker_Y;
       const attackerZ = (event as any).attacker_Z;
       const tick = (event as any).tick || 0;
       const round = (event as any).round || 0;
       
-      // Použít nickname jako primární identifikátor, Steam ID jako fallback
       const victimId = victimName || String(victimSteamId);
       const attackerId = attackerName || String(attackerSteamId);
 
@@ -341,7 +332,7 @@ export async function parseDemoForAllPlayers(
       }
     }
 
-    console.log(`Zpracováno pro ${playerDataMap.size} hráčů`);
+    console.log(`Processed for ${playerDataMap.size} players`);
 
     // Transformovat souřadnice pro každého hráče
     const result: PlayerHeatmapData[] = [];
@@ -413,26 +404,12 @@ export async function parseDemoForAllPlayers(
         kills: killsWithTeam
       });
 
-      console.log(`Hráč ${data.player_name || playerId} (${data.player_steamid || playerId}): ${transformedDeaths.length} smrtí, ${transformedKills.length} zabití`);
+      console.log(`Player ${data.player_name || playerId} (${data.player_steamid || playerId}): ${transformedDeaths.length} deaths, ${transformedKills.length} kills`);
     }
 
     return result;
   } catch (error) {
-    console.error('Chyba při parsování demo souboru:', error);
+    console.error('Error parsing demo file:', error);
     throw error;
   }
-}
-
-/**
- * Parsuje demo soubor a získává pozice smrtí/zabití pro konkrétního hráče
- * @deprecated Použijte parseDemoForAllPlayers místo této funkce
- */
-export async function parseDemoForPlayer(
-  demoPath: string,
-  playerId: string
-): Promise<{ deaths: DeathEvent[]; kills: KillEvent[] }> {
-  // Pro zpětnou kompatibilitu - použijeme parseDemoForAllPlayers
-  // a pak vyfiltrujeme data pro konkrétního hráče
-  // Ale potřebujeme mapName - takže tato funkce by měla být upravena
-  throw new Error('Tato funkce vyžaduje mapName. Použijte parseDemoForAllPlayers místo toho.');
 }

@@ -35,11 +35,12 @@ export function DemoUploadGuide({ matchId }: DemoUploadGuideProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
+                <span className="text-gray-300"> (musíte být přihlášeni na Faceit)</span>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-orange-500 font-semibold">2.</span>
-              <span className="text-gray-300">Stáhněte demo soubor (.zst) z matchroomu</span>
+              <span className="text-gray-300">Stáhněte demo soubor (.zst) z matchroomu (pomocí tlačítko Watch Demo)</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-orange-500 font-semibold">3.</span>
@@ -50,6 +51,9 @@ export function DemoUploadGuide({ matchId }: DemoUploadGuideProps) {
               <span className="text-gray-300">Nahrajte dekomprimovaný .dem soubor pomocí tlačítka níže</span>
             </div>
           </div>
+          <p className="text-xs text-amber-400/90 mt-3 pt-3 border-t border-gray-700/50">
+            <strong>Důležité:</strong> Demo zápasu Faceit ukládá jen po omezenou dobu. Po vypršení této lhůty už není ke stažení a analýza (heatmapa) pro daný zápas není možná. Pro stažení dema je nutné být přihlášen na Faceit.
+          </p>
         </div>
       </div>
     </div>

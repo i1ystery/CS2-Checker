@@ -46,16 +46,16 @@ export function transformPosition(
       // Pro nuke: z >= z_cutoff je horní patro, z < z_cutoff je dolní patro
       layer = z >= mapParams.z_cutoff ? 'upper' : 'lower';
     } else if (mapName === 'de_vertigo') {
-      // Pro vertigo: z >= z_cutoff je horní patro, z < z_cutoff je dolní patro
+      // Pro vertigo
       layer = z >= mapParams.z_cutoff ? 'upper' : 'lower';
     } else if (mapName === 'de_train') {
-      // Pro train: z >= z_cutoff je horní patro, z < z_cutoff je dolní patro
+      // Pro train
       layer = z >= mapParams.z_cutoff ? 'upper' : 'lower';
     }
   }
 
   // - Pro X osu: (position - start) / scale
-  // - Pro Y osu: (start - position) / scale  <-- Y je obráceně!
+  // - Pro Y osu: (start - position) / scale
   const transformedX = (x - mapParams.pos_x) / mapParams.scale;
   const transformedY = (mapParams.pos_y - y) / mapParams.scale;
 
@@ -72,7 +72,7 @@ export function transformPosition(
  * @param coords - Pole objektů {x, y, z}
  * @param imageWidth - Šířka obrázku mapy
  * @param imageHeight - Výška obrázku mapy
- * @returns Pole transformovaných souřadnic {x, y, layer} (null hodnoty jsou filtrovány)
+ * @returns Pole transformovaných souřadnic {x, y, layer}
  */
 export function transformPositions(
   mapName: string,
@@ -85,7 +85,7 @@ export function transformPositions(
       try {
         return transformPosition(mapName, coord.x, coord.y, coord.z, imageWidth, imageHeight);
       } catch (e) {
-        console.warn(`Chyba při transformaci: ${e instanceof Error ? e.message : String(e)}`);
+        console.warn(`Transform error: ${e instanceof Error ? e.message : String(e)}`);
         return null;
       }
     })

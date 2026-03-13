@@ -48,12 +48,6 @@ router.get('/:matchId', async (req, res) => {
       }
     });
     
-    // Vypočítat KAST (Kill, Assist, Survive, Trade)
-    // KAST = (Kills + Assists + Survives + Trades) / Rounds
-    // Survive = Rounds - Deaths
-    // Trade = když hráč zabije někoho, kdo zabil jeho spoluhráče (toto není přímo dostupné, použijeme zjednodušený výpočet)
-    const totalRounds = parseInt(roundStats?.round_stats?.Rounds || '0') || 30; // Default 30 rounds
-    
     const playersStats = teams.flatMap(team => 
       team.players.map(player => {
         const kills = parseInt(player.player_stats?.Kills || '0');
@@ -120,7 +114,7 @@ router.get('/:matchId', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Chyba při získávání zápasu:', error);
+    console.error('Error fetching match:', error);
     res.status(500).json({ error: 'Chyba při komunikaci s Faceit API' });
   }
 });

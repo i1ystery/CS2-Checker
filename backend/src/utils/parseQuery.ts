@@ -24,12 +24,6 @@ export function parseSearchQuery(query: string): ParsedQuery {
     return { type: 'steam_id', value: steamProfileMatch[1] };
   }
   
-  // Steam URL: https://steamcommunity.com/id/customname
-  const steamIdMatch = trimmed.match(/steamcommunity\.com\/id\/([^\/\?]+)/i);
-  if (steamIdMatch && steamIdMatch[1]) {
-    return { type: 'steam_url', value: steamIdMatch[1] };
-  }
-  
   // Čisté Steam ID (17 číslic)
   if (/^\d{17}$/.test(trimmed)) {
     return { type: 'steam_id', value: trimmed };
